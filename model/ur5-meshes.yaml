@@ -1,0 +1,12 @@
+name: ur5
+
+
+base:      "meshes/base.stl"
+shoulder:  "meshes/shoulder.stl"
+upper_arm: "meshes/upperarm.stl"
+forearm:   "meshes/forearm.stl"
+wrist_1:   "meshes/wrist1.stl"
+wrist_2:   "meshes/wrist2.stl"
+wrist_3:   "meshes/wrist3.stl"
+
+

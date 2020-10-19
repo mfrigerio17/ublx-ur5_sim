@@ -1,0 +1,14 @@
+// Specs of the relative pose between the reference frame of the .stl meshes and
+// the reference frame of the corresponding link in the robot model.
+
+Model ur5meshes
+
+
+Convention = currentFrame
+
+stl_shoulder -> shoulder  : rotz(PI/2.0)
+stl_upper_arm -> upper_arm  : rotx(-PI/2.0) rotz(-PI/2.0)
+stl_forearm  -> forearm   : rotx(-PI/2.0) rotz(-PI/2.0)
+stl_wrist1   -> wrist_1   : rotx(-PI/2.0) rotz(-PI/2.0) trz(0.09315)
+stl_wrist2   -> wrist_2   : rotz(PI/2.0) trz(0.09475)
+stl_wrist3   -> wrist_3   : rotx(-PI/2.0) rotz(PI) trz(0.0825)
