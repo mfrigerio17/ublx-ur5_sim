@@ -1,0 +1,34 @@
+-- a minimal blockdiagram to start the block
+
+local jstate_size = 6
+
+return bd.system
+{
+   imports = {
+      "stdtypes",
+      "ptrig",
+      "graphics_bridge",
+   },
+
+   blocks = {
+      { name="graphics_bridge_1", type="graphics_bridge" },
+      { name="ptrig1", type="ubx/ptrig" },
+   },
+
+   configurations = {
+        {
+            name = "graphics_bridge_1",
+            config = { joint_state_size=jstate_size}
+        },
+        {
+        name="ptrig1",
+        config = {
+            period = {sec=1, usec=0 },
+            chain0 = {
+                { b="#graphics_bridge_1" },
+            }
+        }
+        }
+   },
+}
+

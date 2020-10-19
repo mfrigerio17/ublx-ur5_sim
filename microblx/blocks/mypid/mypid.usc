@@ -1,0 +1,14 @@
+-- a minimal blockdiagram to start the block
+
+return bd.system
+{
+   imports = {
+      "stdtypes",
+      "mypid",
+   },
+
+   blocks = {
+      { name="mypid_1", type="mypid" },
+   },
+}
+

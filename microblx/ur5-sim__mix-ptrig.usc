@@ -1,0 +1,28 @@
+
+return bd.system {
+    imports = { "stdtypes", "ptrig" },
+
+    blocks = {
+        { name="ptrig", type="ubx/ptrig" },
+    },
+
+    -- The phread trigger clocks the simulator itself and also the trigger of
+    -- the other periodic components (controller and graphics).
+    -- Perhaps here we could use two processes, acting separately on the
+    -- simulator and on `trig` (i.e. the control system); that may allow to
+    -- exploit some parallelism (?)
+    configurations = {
+        {
+            name="ptrig",
+            config = {
+                period = { sec=0, usec=1000 },
+                tstats_mode = 1,
+                tstats_profile_path="/tmp/",
+                chain0 = {
+                    { b="#robotsim" },
+                    { b="#trig1" },
+                }
+            }
+        },
+    }
+}

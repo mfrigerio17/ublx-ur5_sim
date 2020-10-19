@@ -1,0 +1,14 @@
+-- a minimal blockdiagram to start the block
+
+return bd.system
+{
+   imports = {
+      "stdtypes",
+      "signal_generator",
+   },
+
+   blocks = {
+      { name="signal_generator_1", type="signal_generator" },
+   },
+}
+

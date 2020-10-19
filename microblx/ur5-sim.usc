@@ -1,0 +1,103 @@
+-- a minimal blockdiagram to start the block
+
+local jstate_size = 6
+
+return bd.system
+{
+   imports = {
+      "stdtypes",
+      "ext_time_trig",
+      "mqueue",
+      "robot_interface",
+      "graphics_bridge",
+      "cconst",
+      "signal_generator",
+      "lfds_cyclic", -- the implicit iblock
+      "mypid",
+   },
+
+   blocks = {
+      { name="robotsim", type="robot_interface" }, -- the robot dynamics simulator
+      { name="gbridge", type="graphics_bridge" },  -- bridge to Meshcat visualization
+      { name = "posctrl", type="mypid" },          -- a PID controller taking position and velocity references
+      { name= "q_des", type="signal_generator" },
+      { name= "const_q_des", type="ubx/cconst" },
+      { name= "const_qd_des", type="ubx/cconst" },
+      { name="trig1"  , type="ext_time_trig" },--"ext_time_trig"--ubx/trig
+   },
+
+   configurations = {
+        {
+            name = "robotsim",
+            config = { joint_state_size=jstate_size, misc_sensors_count=0}
+        },
+        {
+            name = "gbridge",
+            config = { joint_state_size=jstate_size}
+        },
+        {
+            name = "posctrl",
+            config = {
+                data_len = jstate_size,
+                Kp = {  100.0, 100.0,  40.0,  10.0,  10.0,  10.0 },
+                Kd = {  2.0,  10.0, 4.0,  0.2,  0.1,  0.1 },
+            }
+        },
+        {
+            name = "const_q_des",
+            config = { type_name='double', data_len=jstate_size, value={0.0,0.0,0.0,0.0,0.0,0.0} },
+        },
+        {
+            name = "const_qd_des",
+            config = { type_name='double', data_len=jstate_size, value={0.0,0.0,0.0,0.0,0.0,0.0} },
+        },
+        {
+            name = "q_des",
+            config = {
+                data_len=jstate_size
+            },
+        },
+        {
+            name="trig1",
+            -- the trigger of the periodic blocks, like the controller, which
+            -- uses the simulated time. Note that I am abusing the `every` cfg
+            -- option really to mean the desired frequency in Hz. This is a
+            -- temporary HACK
+            -- Note that this trigger, internally, only reasons about its input
+            -- 'time', and thus it does not need to be configured with the dt
+            -- at which it is itself triggered.
+            config = {
+                chain0 = {
+                    { b="#gbridge", every=60},
+                    { b ="#posctrl", every=200 },
+                    --{ b ="#const_q_des", every=200 },
+                    { b ="#q_des", every=200 },
+                    { b ="#const_qd_des", every=200 },
+                }
+            }
+        },        
+   },
+
+   connections = {
+      -- signals from the robot (simulated in this case)
+      { src = "robotsim.q",    tgt = "gbridge.q"   , config = { loglevel_overruns=-1 } },
+      { src = "robotsim.q",    tgt = "posctrl.msr" , config = { loglevel_overruns=-1 } },
+      { src = "robotsim.qd",   tgt = "posctrl.msr_dot" , config = { loglevel_overruns=-1 } },
+      { src = "robotsim.time", tgt = "trig1.time" },
+      -- the output of the position controller is the joint force command
+      { src = "posctrl.out", tgt = "robotsim.tau" },
+
+      -- These are default reference signals for the position controller.
+      -- In a real application they should come from some kind of task/skill controller
+      --{ src = "const_q_des.out",  tgt = "posctrl.des", config = { loglevel_overruns=-1 } },
+      { src = "q_des.out",  tgt = "posctrl.des", config = { loglevel_overruns=-1 } },
+      { src = "const_qd_des.out", tgt = "posctrl.des_dot", config = { loglevel_overruns=-1 } },
+
+      -- mqueue debugging:
+      --{ src = "const_q_des.out", type= "ubx/mqueue" },
+      --{ src = "const_qd_des.out", type= "ubx/mqueue" },
+      --{ src = "posctrl.out", type="ubx/mqueue" },
+      --{ src = "robotsim.q" , type= "ubx/mqueue" }
+   }
+}
+

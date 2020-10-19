@@ -1,0 +1,14 @@
+-- a minimal blockdiagram to start the block
+
+return bd.system
+{
+   imports = {
+      "stdtypes",
+      "robot_interface",
+   },
+
+   blocks = {
+      { name="robot_interface_1", type="robot_interface" },
+   },
+}
+

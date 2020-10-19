@@ -1,0 +1,14 @@
+-- a minimal blockdiagram to start the block
+
+return bd.system
+{
+   imports = {
+      "stdtypes",
+      "ext_time_trig",
+   },
+
+   blocks = {
+      { name="ext_time_trig_1", type="ext_time_trig" },
+   },
+}
+
