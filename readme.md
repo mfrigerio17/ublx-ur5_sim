@@ -50,8 +50,12 @@ framework.
 4. Install the microblx blocks provided in this repository:
 
     ```
-    cd microblx/
-    ./bootstrap.sh
+    $ cd microblx/
+	$ ./bootstrap
+	$ mkdir build && cd build
+	$ ../configure
+	$ make -j8
+	$ sudo make install
     ```
 
 5. Download [here](https://kuleuven.box.com/s/hdw2gpa4s0q4kct1ok0rsy8vjyj3ovu1)

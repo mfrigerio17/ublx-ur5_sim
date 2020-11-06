@@ -2,14 +2,16 @@ m4_define([package_version_major],[0])
 m4_define([package_version_minor],[0])
 m4_define([package_version_micro],[1])
 
-AC_INIT([signal_generator], [package_version_major.package_version_minor.package_version_micro])
-AM_INIT_AUTOMAKE([foreign -Wall])
+AC_INIT([graphics_bridge], [package_version_major.package_version_minor.package_version_micro])
+AM_INIT_AUTOMAKE([foreign subdir-objects -Wall])
 
 # compilers
-AC_PROG_CC
+AC_PROG_CXX
 
 PKG_PROG_PKG_CONFIG
 PKG_INSTALLDIR
+
+PKG_CHECK_MODULES(EIGEN, eigen3)
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
